@@ -89,3 +89,77 @@ function fooz_register_books_cpt()
     register_post_type('books', $book_args);
 }
 add_action('init', 'fooz_register_books_cpt');
+
+// Task 4: Force classic templates in block theme
+function fooz_force_classic_templates($template)
+{
+    if (is_singular('books')) {
+        $custom = get_stylesheet_directory() . '/single-books.php';
+        if (file_exists($custom)) {
+            return $custom;
+        }
+    }
+    if (is_tax('genre')) {
+        $custom = get_stylesheet_directory() . '/taxonomy-genre.php';
+        if (file_exists($custom)) {
+            return $custom;
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'fooz_force_classic_templates', 99);
+
+// Task 4.1: AJAX handler - get latest 20 books
+function fooz_ajax_get_latest_books()
+{
+    check_ajax_referer('fooz_book_nonce', 'nonce');
+
+    $exclude_id = isset($_POST['exclude_id']) ? intval($_POST['exclude_id']) : 0;
+
+    $args = array(
+        'post_type' => 'books',
+        'posts_per_page' => 20,
+        'post__not_in' => array($exclude_id),
+        'orderby' => 'date',
+        'order' => 'DESC'
+    );
+
+    $query = new WP_Query($args);
+    $books = array();
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $books[] = array(
+                'name' => get_the_title(),
+                'date' => get_the_date(),
+                'genre' => strip_tags(get_the_term_list(get_the_ID(), 'genre', '', ', ')),
+                'excerpt' => get_the_excerpt()
+            );
+        }
+    }
+
+    wp_reset_postdata();
+    wp_send_json($books);
+}
+add_action('wp_ajax_get_latest_books', 'fooz_ajax_get_latest_books');
+add_action('wp_ajax_nopriv_get_latest_books', 'fooz_ajax_get_latest_books');
+
+// Task 4.1: Localize AJAX object for scripts.js
+function fooz_localize_ajax()
+{
+    wp_localize_script('fooz-scripts', 'fooz_ajax_obj', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('fooz_book_nonce')
+    ));
+}
+add_action('wp_enqueue_scripts', 'fooz_localize_ajax', 20);
+
+// Task 4.2: Limit genre taxonomy to 5 books per page
+function fooz_modify_genre_query($query)
+{
+    if (!is_admin() && $query->is_main_query() && is_tax('genre')) {
+        $query->set('posts_per_page', 5);
+    }
+}
+add_action('pre_get_posts', 'fooz_modify_genre_query');
