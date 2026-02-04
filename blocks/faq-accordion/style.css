@@ -1,0 +1,125 @@
+/**
+ * Task 5: FAQ Accordion Block - Styles
+ * 
+ * Features:
+ * - Programmatic numbering via CSS counter
+ * - Chevron icons (arrow up/down) via CSS
+ * - Pink accent color (#e91e63) for active state
+ * - Responsive design
+ */
+
+.fooz-faq-wrapper {
+    counter-reset: faq-counter;
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.faq-main-title {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #1d2327;
+    text-align: center;
+    font-weight: 700;
+}
+
+.faq-items-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    border-bottom: none;
+    padding: 1rem 0;
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #1d2327;
+    transition: color 0.2s ease;
+    padding: 0.5rem 0;
+}
+
+/* Active state - pink color */
+.faq-item.is-active .faq-question {
+    color: #e91e63;
+}
+
+/* Programmatic numbering */
+.faq-question::before {
+    counter-increment: faq-counter;
+    content: counter(faq-counter) ". ";
+    margin-right: 8px;
+    font-weight: 600;
+    color: inherit;
+}
+
+.faq-question-text {
+    flex: 1;
+}
+
+/* Chevron icon container */
+.faq-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 1rem;
+}
+
+/* Arrow down icon (CSS chevron) */
+.faq-icon::after {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.3s ease;
+}
+
+/* Arrow up when active */
+.faq-item.is-active .faq-icon::after {
+    transform: rotate(-135deg);
+}
+
+/* Answer - hidden by default */
+.faq-answer {
+    display: none;
+    padding: 1rem 0 1.5rem 1.5rem;
+    color: #333;
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+.faq-answer p {
+    margin: 0;
+}
+
+/* Show answer when active */
+.faq-item.is-active .faq-answer {
+    display: block;
+}
+
+/* Responsive - mobile devices */
+@media (max-width: 600px) {
+    .faq-main-title {
+        font-size: 1.75rem;
+    }
+
+    .faq-question {
+        font-size: 0.95rem;
+    }
+
+    .faq-answer {
+        padding-left: 1rem;
+    }
+}

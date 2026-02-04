@@ -1,0 +1,23 @@
+{
+    "apiVersion": 3,
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "fooz/faq-accordion",
+    "title": "FAQ Accordion",
+    "category": "design",
+    "icon": "editor-help",
+    "description": "Accordion block for FAQ sections with expandable questions and answers",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "FAQ"
+        }
+    },
+    "supports": {
+        "html": false
+    },
+    "textdomain": "fooz",
+    "editorScript": "file:./index.js",
+    "viewScript": "file:./view.js",
+    "style": "file:./style.css",
+    "render": "file:./render.php"
+}

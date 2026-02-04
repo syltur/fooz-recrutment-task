@@ -163,3 +163,10 @@ function fooz_modify_genre_query($query)
     }
 }
 add_action('pre_get_posts', 'fooz_modify_genre_query');
+
+// Task 5: Register FAQ Accordion Block
+function fooz_register_faq_block()
+{
+    register_block_type(__DIR__ . '/blocks/faq-accordion');
+}
+add_action('init', 'fooz_register_faq_block');
