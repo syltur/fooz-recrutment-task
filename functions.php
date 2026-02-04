@@ -102,6 +102,30 @@ function fooz_latest_books_shortcode()
 }
 add_shortcode('fooz_latest_books', 'fooz_latest_books_shortcode');
 
+// Shortcode for genre filter (archive page)
+function fooz_genre_filter_shortcode()
+{
+    $terms = get_terms(array(
+        'taxonomy' => 'genre',
+        'hide_empty' => true,
+    ));
+
+    if (empty($terms) || is_wp_error($terms)) {
+        return '';
+    }
+
+    $output = '<div class="genre-filter">';
+    $output .= '<a href="' . get_post_type_archive_link('books') . '" class="genre-filter-item all">All</a>';
+
+    foreach ($terms as $term) {
+        $output .= '<a href="' . get_term_link($term) . '" class="genre-filter-item">' . esc_html($term->name) . '</a>';
+    }
+
+    $output .= '</div>';
+    return $output;
+}
+add_shortcode('fooz_genre_filter', 'fooz_genre_filter_shortcode');
+
 // Task 4.1: AJAX handler - get latest 20 books
 function fooz_ajax_get_latest_books()
 {
