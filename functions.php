@@ -90,24 +90,17 @@ function fooz_register_books_cpt()
 }
 add_action('init', 'fooz_register_books_cpt');
 
-// Task 4: Force classic templates in block theme
-function fooz_force_classic_templates($template)
+// Task 4: Templates are now in /templates/ folder as HTML block templates
+
+// Shortcode for latest books container (works in block templates)
+function fooz_latest_books_shortcode()
 {
-    if (is_singular('books')) {
-        $custom = get_stylesheet_directory() . '/single-books.php';
-        if (file_exists($custom)) {
-            return $custom;
-        }
-    }
-    if (is_tax('genre')) {
-        $custom = get_stylesheet_directory() . '/taxonomy-genre.php';
-        if (file_exists($custom)) {
-            return $custom;
-        }
-    }
-    return $template;
+    $post_id = get_the_ID();
+    return '<div id="latest-books-container" data-exclude-id="' . esc_attr($post_id) . '">
+        <p class="loading">' . esc_html__('Loading...', 'fooz') . '</p>
+    </div>';
 }
-add_filter('template_include', 'fooz_force_classic_templates', 99);
+add_shortcode('fooz_latest_books', 'fooz_latest_books_shortcode');
 
 // Task 4.1: AJAX handler - get latest 20 books
 function fooz_ajax_get_latest_books()
